@@ -52,6 +52,18 @@ Built-in evaluation framework supporting **BIRD** and **Spider 2.0-Snow** datase
 
 **Requirements:** Linux or macOS. Python 3.12 is installed automatically when you use the one-liner.
 
+Installer behavior: the one-liners create a dedicated venv at `~/.datus/venv`, install Datus into it, write command shims into `~/.local/bin`, and may add that directory to your shell rc file. If `uv` is missing, the installers bootstrap it via Astral's installer; set `DATUS_SKIP_UV_INSTALL=1` after installing `uv` yourself if you do not want the Datus installer to run that second remote installer.
+
+For a more inspectable install, download the script first, review it, then run it:
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/datus-ai/datus-agent/main/install.sh
+less install.sh
+sh install.sh
+```
+
+Use `DATUS_NO_MODIFY_PATH=1` to avoid shell rc edits. Use `DATUS_FORCE=1` only when you intentionally want to recreate the venv at `$DATUS_HOME/venv`.
+
 #### One-liner (Linux / macOS)
 
 Stable install from PyPI:
@@ -78,7 +90,7 @@ Pin a PyPI version (stable installer only):
 curl -fsSL https://raw.githubusercontent.com/datus-ai/datus-agent/main/install.sh | DATUS_VERSION=0.2.6 sh
 ```
 
-Other variables supported by both installers: `DATUS_HOME` (default `~/.datus`), `DATUS_BIN_DIR` (default `~/.local/bin`), `DATUS_FORCE=1` to recreate the venv, `DATUS_NO_MODIFY_PATH=1` to skip shell rc edits.
+Other variables supported by both installers: `DATUS_HOME` (default `~/.datus`), `DATUS_BIN_DIR` (default `~/.local/bin`), `DATUS_FORCE=1` to recreate the venv, `DATUS_NO_MODIFY_PATH=1` to skip shell rc edits, and `DATUS_SKIP_UV_INSTALL=1` to fail instead of bootstrapping `uv` when it is missing.
 
 #### Manual install
 

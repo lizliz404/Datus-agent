@@ -22,6 +22,7 @@ Follow these steps in order:
 1. Use `ask_user` to ask: **"What is the goal of this project? Describe it in 1-2 sentences."**
 2. Use `filesystem_tools` to list the current directory structure (scan top 3 levels, skip hidden dirs and `__pycache__`/`node_modules`/.venv`)
 3. Read `README.md` if it exists (first 3000 chars)
+4. Do not read secret-bearing files such as `.env`, private keys, credential files, database dumps, or raw connection profiles. If such files are present, mention only that local/private configuration exists and should not be copied into `AGENTS.md`.
 
 ## Step 2: Select Services
 
@@ -52,7 +53,7 @@ Cover the main directories found in the scan.
 ### ## Services
 A table with columns: **Service | Type | Connection | Description**
 
-Include both configured databases and any additional services the user mentioned.
+Include both configured databases and any additional services the user mentioned. For connection details, use safe labels such as environment variable names, datasource aliases, or config file paths only; never include raw URLs, hostnames with credentials, passwords, tokens, private keys, or full connection strings.
 
 ### ## Data Assets
 **Do NOT list every table.** Instead, provide a high-level summary per database:
@@ -106,6 +107,7 @@ Describe data artifacts, configs, or outputs this project produces:
 ## Important Notes
 
 - **Keep it concise** — AGENTS.md is a project overview, not documentation for every table/column
+- **Never expose secrets** — do not include passwords, API keys, bearer tokens, private keys, `.env` contents, raw connection strings, or personal/local filesystem paths that are not necessary for project understanding
 - If you can't determine something (e.g., architecture), use placeholder comments like `<!-- Describe your architecture here -->`
 - The ASCII diagram should be simple and readable
 - Use the project directory name as the project name unless the README suggests otherwise

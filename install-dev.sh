@@ -16,6 +16,8 @@
 #   DATUS_BIN_DIR          Where shims are written. Default: $HOME/.local/bin.
 #   DATUS_FORCE=1          Delete and recreate $DATUS_HOME/venv if it already exists.
 #   DATUS_NO_MODIFY_PATH=1 Skip appending PATH export to shell rc files.
+#   DATUS_SKIP_UV_INSTALL=1
+#                           Fail if uv is missing instead of bootstrapping it.
 
 set -eu
 
@@ -93,6 +95,9 @@ ensure_uv() {
     if command -v uv >/dev/null 2>&1; then
         info "uv already available: $(command -v uv)"
         return 0
+    fi
+    if [ -n "${DATUS_SKIP_UV_INSTALL:-}" ]; then
+        die "uv is not installed and DATUS_SKIP_UV_INSTALL=1 is set; install uv manually from https://astral.sh/uv, then rerun this installer"
     fi
     info "installing uv (astral.sh/uv)..."
     need_cmd curl
