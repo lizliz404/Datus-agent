@@ -8,6 +8,7 @@ import argparse
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from datus.multi_round_benchmark import multi_benchmark, setup_base_parser_args
 from datus.utils.async_utils import setup_windows_policy
@@ -77,6 +78,14 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     check_db_parser.add_argument("--datasource", type=str, required=True, help="Datasource name to check")
+
+    # demo command
+    subparsers.add_parser(
+        "demo",
+        help="Show the fastest built-in demo path",
+        parents=[global_parser],
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
 
     # platform-doc command
     platform_doc_parser = subparsers.add_parser(
@@ -479,6 +488,47 @@ def create_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _print_demo_path() -> None:
+    """Print a zero-configuration path to the bundled DuckDB demo.
+
+    This command is intentionally discovery-only: it should not load user config,
+    require API keys, or initialize Agent. Its job is to make the first-minute
+    product shape visible before the user commits to setup.
+    """
+
+    demo_db = Path(__file__).resolve().parent / "sample_data" / "duckdb-demo.duckdb"
+    db_status = "found" if demo_db.exists() else "missing"
+    sample_question = "Top 5 failed banks by assets"
+    run_command = (
+        "datus run --datasource demo_duckdb "
+        f"--task \"{sample_question}\" "
+        "--task_db_name duckdb_demo"
+    )
+
+    print(
+        f"""Datus demo
+
+Bundled demo database: {demo_db} ({db_status})
+
+What this demo is meant to show:
+  Database + schema + SQL/history + metrics/docs/feedback become a reusable context layer.
+  The point is not only NL -> SQL; the point is durable data knowledge that agents can reuse.
+
+Try this question:
+  {sample_question}
+
+After configuring a model and datasource, run:
+  {run_command}
+
+Suggested first-run path:
+  1. Configure your model/provider in ~/.datus/conf/agent.yml or project .datus/config.yml.
+  2. Add a DuckDB datasource that points at the bundled demo database above.
+  3. Run the sample question with datus run.
+  4. Bootstrap context with metadata/reference SQL/metrics so later questions reuse the context layer.
+""".strip()
+    )
+
+
 def main():
     parser = create_parser()
     args = parser.parse_args()
@@ -498,6 +548,11 @@ def main():
         from datus.cli.skill_cli import run_skill_command
 
         return run_skill_command(args)
+
+    if args.action == "demo":
+        configure_logging(args.debug, console_output=False)
+        _print_demo_path()
+        return 0
 
     configure_logging(args.debug)
     setup_exception_handler()

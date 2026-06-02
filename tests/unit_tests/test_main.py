@@ -83,6 +83,11 @@ class TestCreateParser:
         assert args.action == "service"
         assert args.command == "list"
 
+    def test_demo_action_parsed(self):
+        parser = create_parser()
+        args = parser.parse_args(["demo"])
+        assert args.action == "demo"
+
     def test_skill_action_parsed(self):
         parser = create_parser()
         args = parser.parse_args(["skill", "list"])
@@ -286,6 +291,27 @@ class TestMainSkillAction:
             with patch.dict("sys.modules", {"datus.cli.skill_cli": MagicMock(run_skill_command=mock_run)}):
                 result = main()
         assert result == 0
+
+
+class TestMainDemoAction:
+    def test_demo_prints_first_run_path_without_loading_agent_config(self, capsys):
+        with (
+            patch("datus.main.configure_logging"),
+            patch("datus.main.setup_exception_handler"),
+            patch("datus.main.load_agent_config") as mock_load_config,
+            patch("datus.main.Agent") as mock_agent,
+            patch.object(sys, "argv", ["datus", "demo"]),
+        ):
+            result = main()
+
+        output = capsys.readouterr().out
+        assert result == 0
+        assert "Datus demo" in output
+        assert "duckdb-demo.duckdb" in output
+        assert "datus run" in output
+        assert "context layer" in output
+        mock_load_config.assert_not_called()
+        mock_agent.assert_not_called()
 
 
 class TestMainCheckDbAction:

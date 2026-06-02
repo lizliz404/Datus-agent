@@ -101,6 +101,16 @@ datus
 
 After the REPL starts, run `/model` to configure an LLM, `/datasource` to add a datasource, and (optionally) `/init` to generate `AGENTS.md` for the current project. For detailed guidance, see the [Quickstart Guide](https://docs.datus.ai/getting_started/Quickstart/).
 
+#### See the demo path first
+
+Before wiring your own warehouse, run:
+
+```bash
+datus demo
+```
+
+It prints the bundled DuckDB demo database path, a sample question, and the exact `datus run` command to try after model + datasource configuration. The demo is designed to show Datus as a reusable data context layer — schema, SQL history, metrics, docs, and feedback — rather than only a one-shot NL-to-SQL command.
+
 ### Four Ways to Use Datus
 
 | Interface | Command | Use Case |
