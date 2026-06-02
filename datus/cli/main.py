@@ -35,8 +35,8 @@ class ArgumentParser:
         self.parser.add_argument(
             "--db_type",
             dest="db_type",
-            choices=[DBType.SQLITE, "snowflake", DBType.DUCKDB],
-            default=DBType.SQLITE,
+            choices=[DBType.SQLITE.value, "snowflake", DBType.DUCKDB.value],
+            default=DBType.SQLITE.value,
             help="Database type to connect to",
         )
         self.parser.add_argument(
